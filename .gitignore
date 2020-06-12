@@ -91,3 +91,10 @@
 # Benchmarking input and output
 /bench/data
 /bench/work
+
+# TIS-CI
+__vfs-*.c
+__vfs-*.h
+tis/build/*
+fuzz_test_*.log
+fuzz_test_*.json

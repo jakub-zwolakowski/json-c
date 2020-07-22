@@ -434,7 +434,11 @@ struct json_object *json_tokener_parse_ex(struct json_tokener *tok, const char *
 			{
 				char inf_char = *str;
 				if (!(tok->flags & JSON_TOKENER_STRICT))
+#ifdef __TRUSTINSOFT_BUGFIX__
+					inf_char = tolower((unsigned char)*str);
+#else
 					inf_char = tolower((int)*str);
+#endif
 				if (inf_char != _json_inf_str[tok->st_pos])
 				{
 					tok->err = json_tokener_error_parse_unexpected;

@@ -1,5 +1,5 @@
 
-fuzz_json_inputs=`ls tis/fuzz_inputs/`
+fuzz_json_inputs=`ls trustinsoft/fuzz_inputs/`
 
 echo "["
 
@@ -21,11 +21,11 @@ echo "  {"
 cat << EOF
     "name": "test_fuzz #${i}: input ${fuzz_json_input}",
     "compilation_database": [
-      "tis/build"
+      "trustinsoft/build"
     ],
-    "compilation_cmd": " -I . -I tis/build",
+    "compilation_cmd": " -I . -I trustinsoft/build",
     "files": [
-      "tis/test_fuzz.c",
+      "trustinsoft/test_fuzz.c",
       "json_c_version.c",
       "json_util.c",
       "printbuf.c",
@@ -41,7 +41,7 @@ cat << EOF
     "filesystem": {
       "files": [
         {
-          "from": "tis/fuzz_inputs/${fuzz_json_input}",
+          "from": "trustinsoft/fuzz_inputs/${fuzz_json_input}",
           "name": "./test.json"
         }
       ]

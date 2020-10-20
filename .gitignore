@@ -95,6 +95,6 @@
 # TIS-CI
 __vfs-*.c
 __vfs-*.h
-tis/build/*
+trustinsoft/build/*
 fuzz_test_*.log
 fuzz_test_*.json

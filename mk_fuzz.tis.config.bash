@@ -20,35 +20,20 @@ echo "  {"
 
 cat << EOF
     "name": "test_fuzz #${i}: input ${fuzz_json_input}",
-    "compilation_database": [
-      "trustinsoft/build"
-    ],
+    "include": "common.config",
     "compilation_cmd": " -I . -I trustinsoft/build",
     "files": [
-      "trustinsoft/test_fuzz.c",
-      "json_c_version.c",
-      "json_util.c",
-      "printbuf.c",
-      "json_tokener.c",
-      "json_object.c",
-      "linkhash.c",
-      "strerror_override.c",
-      "arraylist.c",
-      "json_object_iterator.c",
-      "json_visit.c",
-      "json_pointer.c"
+        "trustinsoft/test_fuzz.c"
     ],
     "filesystem": {
-      "files": [
-        {
-          "from": "trustinsoft/fuzz_inputs/${fuzz_json_input}",
-          "name": "./test.json"
-        }
-      ]
+        "files": [
+            {
+                "from": "trustinsoft/fuzz_inputs/${fuzz_json_input}",
+                "name": "./test.json"
+            }
+        ]
     },
-    "raw_options": {
-      "-val-args": " ./test.json"
-    }
+    "val-args": " ./test.json"
 EOF
 
 done

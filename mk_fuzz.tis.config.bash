@@ -21,7 +21,6 @@ echo "  {"
 cat << EOF
     "name": "test_fuzz #${i}: input ${fuzz_json_input}",
     "include": "common.config",
-    "compilation_cmd": " -I . -I trustinsoft/build",
     "files": [
         "trustinsoft/test_fuzz.c"
     ],

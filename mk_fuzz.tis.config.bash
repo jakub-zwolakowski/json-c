@@ -13,30 +13,30 @@ i=$((i+1))
 if (test $first -eq 0); then
   first=1
 else
-  echo "  },"
+  echo "    },"
 fi
 
-echo "  {"
+echo "    {"
 
 cat << EOF
-    "name": "test_fuzz #${i}: input ${fuzz_json_input}",
-    "include": "common.config",
-    "files": [
-        "trustinsoft/test_fuzz.c"
-    ],
-    "filesystem": {
+        "name": "test_fuzz #${i}: input ${fuzz_json_input}",
+        "include": "common.config",
         "files": [
-            {
-                "from": "trustinsoft/fuzz_inputs/${fuzz_json_input}",
-                "name": "./test.json"
-            }
-        ]
-    },
-    "val-args": " ./test.json"
+            "trustinsoft/test_fuzz.c"
+        ],
+        "filesystem": {
+            "files": [
+                {
+                    "from": "trustinsoft/fuzz_inputs/${fuzz_json_input}",
+                    "name": "./test.json"
+                }
+            ]
+        },
+        "val-args": " ./test.json"
 EOF
 
 done
 
-echo "  }"
+echo "    }"
 
 echo "]"

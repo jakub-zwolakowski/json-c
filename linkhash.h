@@ -40,24 +40,12 @@ extern "C" {
 /**
  * sentinel pointer value for empty slots
  */
-#ifdef __TRUSTINSOFT_ANALYZER__
-/* TEMPORARY, the option "val-int-for-pointer-equality" is being deployed. */
-extern int tis_lh_empty;
-#define LH_EMPTY (void *)(&tis_lh_empty)
-#else
 #define LH_EMPTY (void *)-1
-#endif
 
 /**
  * sentinel pointer value for freed slots
  */
-#ifdef __TRUSTINSOFT_ANALYZER__
-/* TEMPORARY, the option "val-int-for-pointer-equality" is being deployed. */
-extern int tis_lh_freed;
-#define LH_FREED (void *)(&tis_lh_freed)
-#else
 #define LH_FREED (void *)-2
-#endif
 
 /**
  * default string hash function

@@ -2,6 +2,9 @@
 /* Enable RDRAND Hardware RNG Hash Seed */
 /* #undef ENABLE_RDRAND */
 
+/* Override json_c_get_random_seed() with custom code */
+/* #undef OVERRIDE_GET_RANDOM_SEED */
+
 /* Enable partial threading support */
 /* #undef ENABLE_THREADING */
 
@@ -52,6 +55,9 @@
 
 /* Define to 1 if you have the <sys/param.h> header file. */
 #define HAVE_SYS_PARAM_H 1
+
+/* Define to 1 if you have the <sys/random.h> header file. */
+#define HAVE_SYS_RANDOM_H
 
 /* Define to 1 if you have the <sys/resource.h> header file. */
 #define HAVE_SYS_RESOURCE_H
@@ -135,6 +141,9 @@
 /* Define to 1 if you have the `vsyslog' function. */
 #define HAVE_VSYSLOG 1
 
+/* Define if you have the `getrandom' function. */
+#define HAVE_GETRANDOM
+
 /* Define if you have the `getrusage' function. */
 #define HAVE_GETRUSAGE
 
@@ -166,7 +175,7 @@
 #define PACKAGE_NAME "json-c"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "json-c 0.14.99"
+#define PACKAGE_STRING "json-c 0.15.99"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "json-c"
@@ -175,7 +184,7 @@
 #define PACKAGE_URL "https://github.com/json-c/json-c"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.14.99"
+#define PACKAGE_VERSION "0.15.99"
 
 /* The number of bytes in type int */
 #define SIZEOF_INT 4
@@ -202,7 +211,7 @@
 #define STDC_HEADERS
 
 /* Version number of package */
-#define VERSION "0.14.99"
+#define VERSION "0.15.99"
 
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */

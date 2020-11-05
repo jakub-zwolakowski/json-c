@@ -250,17 +250,15 @@ tests = (
 
 def make_test(test):
     if "name" in test:
-        name = test["name"]
+        tis_test = {}
+
         if "formatted" in test and test["formatted"]:
             name = test["name"] + ("_".join(["Formatted"] + test["args"]))
+        else:
+            name = test["name"]
 
-        tis_test = (
-            {
-                "name": name,
-                "include": common_config_path,
-
-            }
-        )
+        tis_test["name"] = name
+        tis_test["include"] = common_config_path
 
         if "formatted" in test:
             if test["formatted"]:
@@ -269,12 +267,10 @@ def make_test(test):
                 compilation_cmd = { "-U": [ "TEST_FORMATTED" ] }
             tis_test["compilation_cmd"] = string_of_options(compilation_cmd)
 
-
         tis_test["files"] = [ os.path.join("tests", test["name"] + ".c") ]
 
         if "filesystem" in test:
             tis_test["filesystem"] = test["filesystem"]
-
 
         if "args" in test:
             tis_test["val-args"] = " " + " ".join(test["args"])
@@ -285,19 +281,19 @@ def make_test(test):
         tis_test = (
             {
                 "name": ("test_fuzz input %s.json" % test["fuzz"]),
-                "include": "trustinsoft/common.config",
+                "include": common_config_path,
                 "files": [
-                    "trustinsoft/test_fuzz.c"
+                     os.path.join("trustinsoft", "test_fuzz.c")
                 ],
                 "filesystem": {
                     "files": [
                         {
-                            "from": ("trustinsoft/fuzz_inputs/%s.json" % test["fuzz"]),
-                            "name": "./test.json"
+                            "from": os.path.join("trustinsoft", "fuzz_inputs", "%s.json" % test["fuzz"]),
+                            "name": "test.json"
                         }
                     ]
                 },
-                "val-args": " ./test.json"
+                "val-args": " test.json"
             }
         )
 

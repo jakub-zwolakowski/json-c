@@ -129,10 +129,184 @@ with open(common_config_path, "w") as file:
 # -------------------------------- tis.config ------------------------------- #
 # --------------------------------------------------------------------------- #
 
-# tis_config = make_tis_config_and_generate_test_vector_files()
-# with open("tis.config", "w") as file:
-#     print("3. Generate the tis.config file and test vector files.")
-#     file.write(string_of_json(tis_config))
+tests = (
+    [
+        {
+            "name": "test1", # test1
+            "formatted": False,
+        },
+        {
+            "name": "test1", # test1Formatted_plain
+            "formatted": True,
+            "args": [ "plain" ],
+        },
+        {
+            "name": "test1", # test1Formatted_pretty
+            "formatted": True,
+            "args": [ "pretty" ],
+        },
+        {
+            "name": "test1", # test1Formatted_spaced
+            "formatted": True,
+            "args": [ "spaced" ],
+        },
+        {
+            "name": "test1", # test1Formatted_spaced_pretty
+            "formatted": True,
+            "args": [ "spaced", "pretty" ],
+        },
+        {
+            "name": "test1", # test1Formatted_spaced_pretty_pretty_tab
+            "formatted": True,
+            "args": [ "spaced", "pretty", "pretty_tab" ],
+        },
+        {
+            "name": "test2", # test2
+            "formatted": False,
+        },
+        {
+            "name": "test2", # test2Formatted_plain
+            "formatted": True,
+            "args": [ "plain" ],
+        },
+        {
+            "name": "test2", # test2Formatted_pretty
+            "formatted": True,
+            "args": [ "pretty" ],
+        },
+        {
+            "name": "test2", # test2Formatted_spaced
+            "formatted": True,
+            "args": [ "spaced" ],
+        },
+        {
+            "name": "test2", # test2Formatted_spaced_pretty
+            "formatted": True,
+            "args": [ "spaced", "pretty" ],
+        },
+        {
+            "name": "test2", # test2Formatted_spaced_pretty_pretty_tab
+            "formatted": True,
+            "args": [ "spaced", "pretty", "pretty_tab" ],
+        },
+        { "name": "test4" },
+        { "name": "test_cast" },
+        { "name": "test_charcase" },
+        { "name": "test_compare" },
+        { "name": "test_deep_copy" },
+        { "name": "test_double_serializer" },
+        { "name": "test_float" },
+        { "name": "test_int_add" },
+        { "name": "test_json_pointer" },
+        { "name": "test_locale" },
+        { "name": "test_null" },
+        {
+            "name": "test_object_iterator",
+            "args": [ "." ],
+        },
+        { "name": "test_parse" },
+        { "name": "test_parse_int64" },
+        { "name": "test_printbuf" },
+        { "name": "testReplaceExisting" },
+        { "name": "test_set_serializer" },
+        { "name": "test_set_value" },
+        {
+            "name": "test_util_file",
+            "args": [ "." ],
+            "filesystem": {
+                "files": [
+                    {
+                        "from": "tests/valid.json",
+                        "name": "./valid.json"
+                    },
+                    {
+                        "from": "tests/valid_nested.json",
+                        "name": "./valid_nested.json"
+                    },
+                    {
+                        "name": "/dev/null"
+                    },
+                ],
+            },
+        },
+        { "name": "test_visit" },
+        {
+            "fuzz": "0-10058b8cd9"
+        },
+        {
+            "fuzz": "0-4735d351ed"
+        },
+        {
+            "fuzz": "0-638577393e"
+        },
+        {
+            "fuzz": "1-8e3702d59d"
+        },
+        {
+            "fuzz": "1-fb0eb4ff8c"
+        },
+    ]
+)
+
+def make_test(test):
+    if "name" in test:
+        name = test["name"]
+        if "formatted" in test and test["formatted"]:
+            name = test["name"] + ("_".join(["Formatted"] + test["args"]))
+
+        tis_test = (
+            {
+                "name": name,
+                "include": common_config_path,
+
+            }
+        )
+
+        if "formatted" in test:
+            if test["formatted"]:
+                compilation_cmd = { "-D": [ "TEST_FORMATTED" ] }
+            else:
+                compilation_cmd = { "-U": [ "TEST_FORMATTED" ] }
+            tis_test["compilation_cmd"] = string_of_options(compilation_cmd)
+
+
+        tis_test["files"] = [ os.path.join("tests", test["name"] + ".c") ]
+
+        if "filesystem" in test:
+            tis_test["filesystem"] = test["filesystem"]
+
+
+        if "args" in test:
+            tis_test["val-args"] = " " + " ".join(test["args"])
+
+        return tis_test
+
+    if "fuzz" in test:
+        tis_test = (
+            {
+                "name": ("test_fuzz input %s.json" % test["fuzz"]),
+                "include": "trustinsoft/common.config",
+                "files": [
+                    "trustinsoft/test_fuzz.c"
+                ],
+                "filesystem": {
+                    "files": [
+                        {
+                            "from": ("trustinsoft/fuzz_inputs/%s.json" % test["fuzz"]),
+                            "name": "./test.json"
+                        }
+                    ]
+                },
+                "val-args": " ./test.json"
+            }
+        )
+
+        return tis_test
+
+tis_config = list(map(make_test, tests))
+with open("tis.config", "w") as file:
+    print("3. Generate the tis.config file and test vector files.")
+    file.write(string_of_json(tis_config))
 
 # ---------------------------------------------------------------------------- #
 # ------------------------------ COPY .h FILES ------------------------------- #

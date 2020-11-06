@@ -80,7 +80,10 @@ def string_of_options(options):
 
 def make_common_config():
     # C files.
-    c_files = sorted(glob.iglob("*.c", recursive=False))
+    c_files = (
+        sorted(glob.iglob("*.c", recursive=False)) +
+        [ os.path.join("tests", "parse_flags.c") ]
+    )
     # Compilation options.
     compilation_cmd = (
         {

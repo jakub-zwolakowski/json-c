@@ -10,6 +10,7 @@ import json # dumps, load
 import os # path, makedirs
 import binascii # hexlify
 import shutil # copyfileobj
+import glob # iglob
 
 # Outputting JSON.
 def string_of_json(obj):
@@ -27,19 +28,18 @@ def string_of_json(obj):
 build_dir = "build"
 
 # Generated files which need to be a part of the repository.
+def make_simple_copy_file(filename):
+    return (
+        {
+            "src": os.path.join(build_dir, filename),
+            "dst": os.path.join("trustinsoft", "build", filename),
+        }
+    )
+
 files_to_copy = [
-    {
-        "src": os.path.join(build_dir, "apps_config.h"),
-        "dst": os.path.join("trustinsoft", "build", "apps_config.h"),
-    },
-    {
-        "src": os.path.join(build_dir, "config.h"),
-        "dst": os.path.join("trustinsoft", "build", "config.h"),
-    },
-    {
-        "src": os.path.join(build_dir, "json_config.h"),
-        "dst": os.path.join("trustinsoft", "build", "json_config.h"),
-    },
+    make_simple_copy_file("apps_config.h"),
+    make_simple_copy_file("config.h"),
+    make_simple_copy_file("json_config.h"),
 ]
 
 # --------------------------------------------------------------------------- #
@@ -72,40 +72,22 @@ for file in files_to_copy:
 common_config_path = os.path.join("trustinsoft", "common.config")
 
 def string_of_options(options):
-    s = ''
-    beginning = True
-    for option_prefix in options:
-        for option_val in options[option_prefix]:
-            if beginning:
-                beginning = False # No need for a separator at the beginning.
-            else:
-                s += ' '
-            s += option_prefix + option_val
-    return s
+    elts = []
+    for opt_prefix in options: # e.g. opt_prefix == "-D"
+        for opt_value in options[opt_prefix]: # e.g. opt_value == "HAVE_OPEN"
+            elts.append(opt_prefix + opt_value) # e.g. "-DHAVE_OPEN"
+    return " ".join(elts)
 
 def make_common_config():
     # C files.
-    c_files = [
-        "arraylist.c",
-        "json_c_version.c",
-        "json_object_iterator.c",
-        "json_object.c",
-        "json_pointer.c",
-        "json_tokener.c",
-        "json_util.c",
-        "json_visit.c",
-        "linkhash.c",
-        "printbuf.c",
-        "strerror_override.c",
-        "tests/parse_flags.c",
-    ]
+    c_files = sorted(glob.iglob("*.c", recursive=False))
     # Compilation options.
     compilation_cmd = (
         {
             "-I": [
+                os.path.join("build"),
                 "..",
                 os.path.join("..", "tests"),
-                os.path.join("build"),
             ],
             "-D": [],
             "-U": [],
@@ -132,86 +114,86 @@ with open(common_config_path, "w") as file:
 tests = (
     [
         {
-            "name": "test1", # test1
+            "test": "test1",
             "formatted": False,
         },
         {
-            "name": "test1", # test1Formatted_plain
+            "test": "test1",
             "formatted": True,
             "args": [ "plain" ],
         },
         {
-            "name": "test1", # test1Formatted_pretty
+            "test": "test1",
             "formatted": True,
             "args": [ "pretty" ],
         },
         {
-            "name": "test1", # test1Formatted_spaced
+            "test": "test1",
             "formatted": True,
             "args": [ "spaced" ],
         },
         {
-            "name": "test1", # test1Formatted_spaced_pretty
+            "test": "test1",
             "formatted": True,
             "args": [ "spaced", "pretty" ],
         },
         {
-            "name": "test1", # test1Formatted_spaced_pretty_pretty_tab
+            "test": "test1",
             "formatted": True,
             "args": [ "spaced", "pretty", "pretty_tab" ],
         },
         {
-            "name": "test2", # test2
+            "test": "test2",
             "formatted": False,
         },
         {
-            "name": "test2", # test2Formatted_plain
+            "test": "test2",
             "formatted": True,
             "args": [ "plain" ],
         },
         {
-            "name": "test2", # test2Formatted_pretty
+            "test": "test2",
             "formatted": True,
             "args": [ "pretty" ],
         },
         {
-            "name": "test2", # test2Formatted_spaced
+            "test": "test2",
             "formatted": True,
             "args": [ "spaced" ],
         },
         {
-            "name": "test2", # test2Formatted_spaced_pretty
+            "test": "test2",
             "formatted": True,
             "args": [ "spaced", "pretty" ],
         },
         {
-            "name": "test2", # test2Formatted_spaced_pretty_pretty_tab
+            "test": "test2",
             "formatted": True,
             "args": [ "spaced", "pretty", "pretty_tab" ],
         },
-        { "name": "test4" },
-        { "name": "test_cast" },
-        { "name": "test_charcase" },
-        { "name": "test_compare" },
-        { "name": "test_deep_copy" },
-        { "name": "test_double_serializer" },
-        { "name": "test_float" },
-        { "name": "test_int_add" },
-        { "name": "test_json_pointer" },
-        { "name": "test_locale" },
-        { "name": "test_null" },
+        { "test": "test4" },
+        { "test": "test_cast" },
+        { "test": "test_charcase" },
+        { "test": "test_compare" },
+        { "test": "test_deep_copy" },
+        { "test": "test_double_serializer" },
+        { "test": "test_float" },
+        { "test": "test_int_add" },
+        { "test": "test_json_pointer" },
+        { "test": "test_locale" },
+        { "test": "test_null" },
         {
-            "name": "test_object_iterator",
+            "test": "test_object_iterator",
             "args": [ "." ],
         },
-        { "name": "test_parse" },
-        { "name": "test_parse_int64" },
-        { "name": "test_printbuf" },
-        { "name": "testReplaceExisting" },
-        { "name": "test_set_serializer" },
-        { "name": "test_set_value" },
+        { "test": "test_parse" },
+        { "test": "test_parse_int64" },
+        { "test": "test_printbuf" },
+        { "test": "testReplaceExisting" },
+        { "test": "test_set_serializer" },
+        { "test": "test_set_value" },
         {
-            "name": "test_util_file",
+            "test": "test_util_file",
             "args": [ "." ],
             "filesystem": {
                 "files": [
@@ -229,36 +211,33 @@ tests = (
                 ],
             },
         },
-        { "name": "test_visit" },
-        {
-            "fuzz": "0-10058b8cd9"
-        },
-        {
-            "fuzz": "0-4735d351ed"
-        },
-        {
-            "fuzz": "0-638577393e"
-        },
-        {
-            "fuzz": "1-8e3702d59d"
-        },
-        {
-            "fuzz": "1-fb0eb4ff8c"
-        },
+        { "test": "test_visit" },
+        { "fuzz": "0-10058b8cd9" },
+        { "fuzz": "0-4735d351ed" },
+        { "fuzz": "0-638577393e" },
+        { "fuzz": "1-8e3702d59d" },
+        { "fuzz": "1-fb0eb4ff8c" },
     ]
 )
 
+fuzz_input_dir = os.path.join("trustinsoft", "fuzz_inputs")
+
 def make_test(test):
-    if "name" in test:
-        tis_test = {}
+    if "test" in test:
+        name_elts = [ test["test"] ]
+        if "formatted" in test:
+            if test["formatted"]:
+                name_elts.append("formatted")
+            if "args" in test:
+                name_elts += test["args"]
+        name = " ".join(name_elts)
 
-        if "formatted" in test and test["formatted"]:
-            name = test["name"] + ("_".join(["Formatted"] + test["args"]))
-        else:
-            name = test["name"]
-
-        tis_test["name"] = name
-        tis_test["include"] = common_config_path
+        tis_test = (
+            {
+                "name": name,
+                "include": common_config_path,
+            }
+        )
 
         if "formatted" in test:
             if test["formatted"]:
@@ -267,7 +246,7 @@ def make_test(test):
                 compilation_cmd = { "-U": [ "TEST_FORMATTED" ] }
             tis_test["compilation_cmd"] = string_of_options(compilation_cmd)
 
-        tis_test["files"] = [ os.path.join("tests", test["name"] + ".c") ]
+        tis_test["files"] = [ os.path.join("tests", test["test"] + ".c") ]
 
         if "filesystem" in test:
             tis_test["filesystem"] = test["filesystem"]
@@ -278,9 +257,10 @@ def make_test(test):
         return tis_test
 
     if "fuzz" in test:
+        fuzz_filename = test["fuzz"] + ".json"
         tis_test = (
             {
-                "name": ("test_fuzz input %s.json" % test["fuzz"]),
+                "name": ("test_fuzz input " + fuzz_filename),
                 "include": common_config_path,
                 "files": [
                      os.path.join("trustinsoft", "test_fuzz.c")
@@ -288,7 +268,7 @@ def make_test(test):
                 "filesystem": {
                     "files": [
                         {
-                            "from": os.path.join("trustinsoft", "fuzz_inputs", "%s.json" % test["fuzz"]),
+                            "from": os.path.join(fuzz_input_dir, fuzz_filename),
                             "name": "test.json"
                         }
                     ]
@@ -304,9 +284,9 @@ with open("tis.config", "w") as file:
     print("3. Generate the tis.config file and test vector files.")
     file.write(string_of_json(tis_config))
 
-# ---------------------------------------------------------------------------- #
-# ------------------------------ COPY .h FILES ------------------------------- #
-# ---------------------------------------------------------------------------- #
+# --------------------------------------------------------------------------- #
+# ------------------------------ COPY .h FILES ------------------------------ #
+# --------------------------------------------------------------------------- #
 
 print("5. Copy generated files.")
 for file in files_to_copy:

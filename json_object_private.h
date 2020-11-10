@@ -91,7 +91,7 @@ struct json_object_string
 	// to expand the length of a string are common operations to perform.
 	union
 	{
-		char idata[1]; // Immediate data.  Actually longer
+		char idata[1000000]; // Immediate data.  Actually longer
 		char *pdata;   // Only when len < 0
 	} c_string;
 };
